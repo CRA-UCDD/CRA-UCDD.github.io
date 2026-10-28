@@ -3052,17 +3052,49 @@ function onPhoneBarMonthChange(){
     if (frame) frame.srcdoc = buildPhonePage(currentPhoneEmp);
   });
 }
+/* V186 last-view memory: remember phone vs roster per browser (localStorage).
+   The phone view also records WHO, since the overlay needs an employee; the
+   roster records no person. Restored once at boot (cache render if available,
+   else after the live load); writes happen only on user open/close, never on
+   boot, so restoring never fights itself. */
+const LAST_VIEW_KEY = 'iocLastView';
+let lastViewRestored = false;
+function readLastView(){
+  try {
+    const raw = localStorage.getItem(LAST_VIEW_KEY);
+    if (!raw) return null;
+    const v = JSON.parse(raw);
+    if (!v || typeof v !== 'object') return null;
+    if (v.view !== 'phone' && v.view !== 'roster') return null;
+    if (v.view === 'phone' && typeof v.aka !== 'string') return null;
+    return v;
+  } catch (e) { return null; }
+}
+function writeLastView(view, aka){
+  try { localStorage.setItem(LAST_VIEW_KEY, JSON.stringify({ view: view, aka: aka || '' })); } catch (e) {}
+}
+function restoreLastView(isLive){
+  const pref = readLastView();
+  if (!pref || pref.view !== 'phone') return true;
+  const overlay = document.getElementById('phoneViewOverlay');
+  if (overlay && overlay.style.display !== 'none') return true;
+  const emp = liveEmployees.find(e => e.aka === pref.aka);
+  if (emp) { showPhoneView(emp); return true; }
+  return !!isLive;
+}
 function showPhoneView(emp){
   const frame = document.getElementById('phoneViewFrame');
   frame.srcdoc = buildPhonePage(emp);
   document.getElementById('phoneViewOverlay').style.display = 'flex';
   currentPhoneEmp = emp;
   refreshPhoneBarMonths();
+  writeLastView('phone', emp.aka);
 }
 function closePhoneView(){
   currentPhoneEmp = null;
   document.getElementById('phoneViewOverlay').style.display = 'none';
   document.getElementById('phoneViewFrame').srcdoc = '';
+  writeLastView('roster', '');
 }
 document.getElementById('phoneViewBackBtn').addEventListener('click', closePhoneView);
 document.getElementById('phoneViewShareBtn').addEventListener('click', function(){
@@ -5339,6 +5371,7 @@ async function connectDb(){
   if (profilesOk) saveMainMeta();
 
   await loadMonth(defaultMonthKey());
+  if (!lastViewRestored) { restoreLastView(true); lastViewRestored = true; }
 }
 
 renderLegend();
@@ -5366,6 +5399,7 @@ if (mainCacheShown) {
     renderRows();
   }
 }
+if (mainCacheShown && !lastViewRestored && restoreLastView(false)) lastViewRestored = true;
 connectDb();
 
 document.getElementById('searchInput').addEventListener('input', e=>{ state.search = e.target.value; renderRows(); });
