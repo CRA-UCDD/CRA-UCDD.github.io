@@ -1343,6 +1343,13 @@ tfoot td.name-cell{background:#1f3b63!important;color:#fff!important;font-weight
 }
 
 
+/* V187 overlay bar: Share hidden; Full Calendar sits with Month/Year as one
+   centred group, all the same height (the selects stretch to the button's
+   height; the align-self rule beats the roster's baseline rule for selects) */
+#phoneViewShareBtn{display:none!important;}
+#phoneViewOverlay .month-select{align-self:stretch!important;}
+
+
 /* V106 icon placement */
 .emp-name .emp-icon,
 .employee-name .emp-icon,
@@ -1367,7 +1374,7 @@ tfoot td.name-cell{background:#1f3b63!important;color:#fff!important;font-weight
 </style>
 </head>
 <body>
-<div id="phoneViewOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#f4f6f8;flex-direction:column;" role="dialog" aria-label="Phone view"><div style="display:flex;align-items:center;gap:10px;flex:none;min-height:52px;padding:6px 12px;background:#1B3352;color:#fff;"><button type="button" id="phoneViewBackBtn" data-t="phoneFullCalendar" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:8px 14px;font-size:15px;flex:none;">Full Calendar</button><div style="flex:1;display:flex;justify-content:center;gap:8px;min-width:0;"><select id="phoneViewMonthSel" class="month-tag month-select"></select><select id="phoneViewYearSel" class="month-tag month-select"></select></div><button type="button" id="phoneViewShareBtn" data-t-aria="phoneShare" data-t-title="phoneShare" aria-label="Share" title="Share" style="width:44px;height:44px;flex:none;padding:0;border:1px solid rgba(255,255,255,.3);border-radius:8px;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/></svg></button></div><iframe id="phoneViewFrame" title="Phone view" style="flex:1;width:100%;border:0;min-height:0;"></iframe></div><div class="app">
+<div id="phoneViewOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#f4f6f8;flex-direction:column;" role="dialog" aria-label="Phone view"><div style="display:flex;align-items:center;gap:10px;flex:none;min-height:52px;padding:6px 12px;background:#1B3352;color:#fff;"><div style="flex:1;display:flex;justify-content:center;align-items:stretch;gap:8px;min-width:0;"><button type="button" id="phoneViewBackBtn" data-t="phoneFullCalendar" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:8px 14px;font-size:15px;flex:none;">Full Calendar</button><select id="phoneViewMonthSel" class="month-tag month-select"></select><select id="phoneViewYearSel" class="month-tag month-select"></select></div><button type="button" id="phoneViewShareBtn" data-t-aria="phoneShare" data-t-title="phoneShare" aria-label="Share" title="Share" style="width:44px;height:44px;flex:none;padding:0;border:1px solid rgba(255,255,255,.3);border-radius:8px;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/></svg></button></div><iframe id="phoneViewFrame" title="Phone view" style="flex:1;width:100%;border:0;min-height:0;"></iframe></div><div class="app">
 
   <header class="masthead">
     <div class="masthead-top">
