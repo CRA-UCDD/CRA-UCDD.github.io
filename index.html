@@ -1333,6 +1333,16 @@ tfoot td.name-cell{background:#1f3b63!important;color:#fff!important;font-weight
 #editorPopover .schedule-generator-panel.modal-actions-grid #phoneViewBtnEditor{justify-self:start!important;}
 
 
+/* V185 narrow screens: modal fits iPhone mini (375px); buttons stay one row, alignment kept */
+@media (max-width:480px){
+  #editorPopover.editor-popover.wide{width:calc(100vw - 16px)!important;min-width:0!important;max-width:calc(100vw - 16px)!important;left:8px!important;}
+  .employee-editor,.popover,.name-editor-popover{width:calc(100vw - 16px)!important;min-width:0!important;max-width:calc(100vw - 16px)!important;}
+  #editorPopover .schedule-generator-panel > div{min-width:0!important;}
+  #editorPopover .schedule-generator-panel.modal-actions-grid{column-gap:8px!important;}
+  #editorPopover .mini-action-btn{font-size:10px!important;padding:4px 7px!important;}
+}
+
+
 /* V106 icon placement */
 .emp-name .emp-icon,
 .employee-name .emp-icon,
