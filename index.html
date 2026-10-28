@@ -1324,6 +1324,15 @@ tfoot td.name-cell{background:#1f3b63!important;color:#fff!important;font-weight
 }
 
 
+/* V184 modal cleanup: labels + buttons share two grid rows; phone label aligns with phone button */
+#editorPopover .schedule-generator-panel .custom-icon-actions #pickAtHomeBtnEditor,
+#editorPopover .schedule-generator-panel .custom-icon-actions #genScheduleBtnEditor{flex:0 0 auto!important;width:auto!important;min-width:0!important;}
+#editorPopover .schedule-generator-panel.modal-actions-grid{display:grid!important;grid-template-columns:1fr auto!important;column-gap:16px!important;row-gap:5px!important;align-items:center!important;}
+#editorPopover .schedule-generator-panel.modal-actions-grid > div{min-width:0!important;}
+#editorPopover .schedule-generator-panel.modal-actions-grid .popover-section-label{margin:0!important;}
+#editorPopover .schedule-generator-panel.modal-actions-grid #phoneViewBtnEditor{justify-self:start!important;}
+
+
 /* V106 icon placement */
 .emp-name .emp-icon,
 .employee-name .emp-icon,
@@ -1961,7 +1970,7 @@ const T = {
   genSchedule: { en: 'Generate Schedule', fr: 'Générer l\'horaire' },
   genAllSchedules: { en: 'Generate All Schedules', fr: 'Générer tous les horaires' },
   phoneViewSection: { en: 'Phone view', fr: 'Vue mobile' },
-  phoneViewOpen: { en: 'Open phone view', fr: 'Ouvrir la vue mobile' },
+  phoneViewOpen: { en: 'Open Phone View', fr: 'Ouvrir la vue mobile' },
   phoneLoading: { en: 'Loading…', fr: 'Chargement…' },
   phoneLoadFail: { en: 'Couldn’t load this month. Check your connection and try again.', fr: 'Impossible de charger ce mois. Vérifiez votre connexion et réessayez.' },
   phoneRetry: { en: 'Retry', fr: 'Réessayer' },
@@ -3092,12 +3101,11 @@ function openNamePopoverFor(cellEl){
       <div class="upload-msg" id="uploadMsg"></div>`;
   }
 
-  const scheduleHtml = `<div class="schedule-generator-panel"><div class="popover-section-label">${t('schedGen')}</div><div class="custom-icon-actions"><button type="button" class="mini-action-btn" id="pickAtHomeBtnEditor">${t('pickAtHome')}</button><button type="button" class="mini-action-btn" id="genScheduleBtnEditor">${t('genSchedule')}</button></div></div>`;
-  const phoneHtml = `<div class="schedule-generator-panel"><div class="popover-section-label">${t('phoneViewSection')}</div><div class="custom-icon-actions"><button type="button" class="mini-action-btn" id="phoneViewBtnEditor">${t('phoneViewOpen')}</button></div></div>`;
+  const actionsHtml = `<div class="schedule-generator-panel modal-actions-grid"><div class="popover-section-label">${t('schedGen')}</div><div class="popover-section-label">${t('phoneViewSection')}</div><div class="custom-icon-actions"><button type="button" class="mini-action-btn" id="pickAtHomeBtnEditor">${t('pickAtHome')}</button><button type="button" class="mini-action-btn" id="genScheduleBtnEditor">${t('genSchedule')}</button></div><button type="button" class="mini-action-btn" id="phoneViewBtnEditor">${t('phoneViewOpen')}</button></div>`;
 const colorHtml = `<div class="popover-section-label">${t('colourLabel')}</div><div class="color-row">` +
     NAME_COLORS.map(c => `<button type="button" class="color-opt${(emp.nameColor||'')===c.key?' selected':''}" data-color="${c.key}" title="${LANG === 'fr' ? NAME_COLOR_FR[c.key] : c.label}"><span class="color-swatch ${c.cls}"></span></button>`).join('') +
     `</div>`;
-  popoverOptionsEl.innerHTML = scheduleHtml + phoneHtml + iconHtml + customHtml + colorHtml;
+  popoverOptionsEl.innerHTML = actionsHtml + iconHtml + customHtml + colorHtml;
 
   positionPopover(cellEl, 246);
 
