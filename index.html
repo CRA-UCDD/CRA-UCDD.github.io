@@ -1591,7 +1591,7 @@ let popoverMode = null;     // 'day' | 'name'
    itself holds the actual Sheets/Drive permissions and every write
    is validated and conflict-checked on the server.
    ========================================================= */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwL4MHg0VcgD7Ft5O55TUug-bZuUh_mfiqvwvUW3DqrpusJN5QPiblpmhGI0MOV8kImcw/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxjs1cpF9H7db9vzTRc8sfVtuB0iwFPreyoRx4ESHVj4I6SDlj4NuHgzKPXsvUeTEWK/exec';
 
 /* =========================================================
    INSTANCE CONFIG
@@ -2396,7 +2396,9 @@ function renderRows(){
     const iconSuffix = e.customIconUrl
       ? ` <img class="name-icon-img" src="${iconSrc(e.customIconUrl)}" alt="">`
       : (e.icon ? ` ${e.icon}` : '');
-    html += `<td class="name-cell${colorCls}${nameEditableCls}" data-emp-name="${e.id}" title="${canWrite ? t('iconColourTitle') : ''}"><div class="emp-name">${e.name}${iconSuffix} <span class="emp-inline-meta">| ${e.aka} | ${e.location}</span></div></td>`;
+    // V188: user IDs (AKAs) are no longer rendered in roster name cells — they stay in the
+    // data model, the data-emp attributes, the On-site Today filter/copy, and the Admin views.
+    html += `<td class="name-cell${colorCls}${nameEditableCls}" data-emp-name="${e.id}" title="${canWrite ? t('iconColourTitle') : ''}"><div class="emp-name">${e.name}${iconSuffix} <span class="emp-inline-meta">| ${e.location}</span></div></td>`;
     idxs.forEach(i => {
       const dayNum = i+1;
       const code = getCode(e.aka, dayNum);
@@ -4461,14 +4463,8 @@ function formatOnSiteList(scheduled){
   return { text, count: scheduled.length };
 }
 
-function buildInOfficeListText(onlyVisible){
-  if(!TODAY_DAY_NUM) return null;
-  const scheduled = onlyVisible
-    ? sectionRunSort(liveEmployees.filter(e => employeePasses(e)))
-    : sectionRunSort(liveEmployees.filter(e => getCode(e.aka, TODAY_DAY_NUM) === '.'));
-  return formatOnSiteList(scheduled);
-}
-
+// V189: buildInOfficeListText removed with the roster-toggle copy — the toggle was its
+// only caller. The Admin copy (copyInOfficeList) builds its list via formatOnSiteList.
 async function writeTextToClipboard(text){
   try{
     if(navigator.clipboard && navigator.clipboard.writeText){
@@ -5426,25 +5422,14 @@ document.getElementById('behindToggle').addEventListener('click', function(){
   this.textContent = state.behindOnly ? t('showingBehind') : t('behindOnly');
   renderRows();
 });
-document.getElementById('inOfficeTodayToggle').addEventListener('click', async function(){
+// V189: the roster On-site Today button only filters — the clipboard copy was removed
+// here. Copying today's list lives only in the Admin area (copyInOfficeBtn).
+document.getElementById('inOfficeTodayToggle').addEventListener('click', function(){
   if(!TODAY_DAY_NUM) return;
   state.inOfficeToday = !state.inOfficeToday;
   this.setAttribute('aria-pressed', state.inOfficeToday);
   this.textContent = state.inOfficeToday ? t('showingOnSiteToday') : t('onSiteToday');
   renderRows();
-  if(state.inOfficeToday){
-    // Also copy the list to the clipboard, so it's ready to hand straight
-    // to CoPilot for cross-referencing against e-Concierge — no need to
-    // unlock Admin just to grab today's names and IDs.
-    // Only the currently visible rows — whatever the roster's own filters
-    // (location, team, search) are showing right now — not everyone in
-    // office, so this matches what's actually on screen.
-    // (Copies silently — no confirmation text is shown.)
-    const built = buildInOfficeListText(true);
-    if(built && built.count > 0){
-      await writeTextToClipboard(built.text);
-    }
-  }
 });
 document.addEventListener('DOMContentLoaded',()=>{const c=document.getElementById('connInline');if(c&&!c.textContent.trim())c.textContent = t('connected');});
 
